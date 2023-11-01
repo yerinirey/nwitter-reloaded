@@ -3,6 +3,7 @@ import { ITweet } from "./timeline";
 import { auth, db, storage } from "../firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
+// import { useState } from "react";
 
 const Wrapper = styled.div`
   display: grid;
@@ -34,6 +35,8 @@ const Payload = styled.p`
   font-size: 18px;
 `;
 
+const ButtonWrapper = styled.div``;
+
 const DeleteButton = styled.button`
   background-color: tomato;
   color: white;
@@ -45,6 +48,18 @@ const DeleteButton = styled.button`
   border-radius: 5px;
   cursor: pointer;
 `;
+// const EditButton = styled.button`
+//   background-color: #1d9bf0;
+//   color: white;
+//   font-weight: 600;
+//   font-size: 12px;
+//   border: 0;
+//   padding: 5px 10px;
+//   margin-left: 10px;
+//   text-transform: uppercase;
+//   border-radius: 5px;
+//   cursor: pointer;
+// `;
 
 export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
   const user = auth.currentUser;
@@ -69,7 +84,10 @@ export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
         <Username>{username}</Username>
         <Payload>{tweet}</Payload>
         {user?.uid === userId ? (
-          <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+          <ButtonWrapper>
+            <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+            {/* <EditButton onClick={onEdit}>Edit</EditButton> */}
+          </ButtonWrapper>
         ) : null}
       </Column>
       <Column>{photo ? <Photo src={photo} /> : null}</Column>
