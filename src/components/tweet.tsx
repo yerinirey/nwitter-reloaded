@@ -12,12 +12,13 @@ const Wrapper = styled.div`
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 15px;
+  word-break: break-all;
 `;
 
 const Column = styled.div`
-  /* &:last-child {
+  &:last-child {
     place-self: end;
-  } */
+  }
 `;
 
 const Photo = styled.img`
@@ -173,9 +174,7 @@ export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
           </ButtonWrapper>
         ) : null}
       </Column>
-      <Column style={{ placeSelf: "end" }}>
-        {photo ? <Photo src={photo} /> : null}
-      </Column>
+      <Column>{photo ? <Photo src={photo} /> : null}</Column>
     </Wrapper>
   );
 }

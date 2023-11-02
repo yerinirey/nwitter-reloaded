@@ -55,10 +55,39 @@ const Tweets = styled.div`
   gap: 10px;
 `;
 
+const RenameInput = styled.input`
+  background-color: black;
+  color: white;
+  text-align: center;
+  border-radius: 25px;
+  border: 2px dashed white;
+  font-size: 22px;
+  padding: 10px 15px;
+  &:focus {
+    outline: none;
+    border: 2px dashed #1d9bf0;
+  }
+`;
+
+const RenameBtn = styled.button`
+  padding: 5px 10px;
+  margin-top: -5px;
+  font-weight: 600;
+  background-color: black;
+  color: white;
+  border: 2px solid grey;
+  cursor: pointer;
+  &:hover {
+    background-color: grey;
+  }
+`;
+
 export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
   const [tweets, setTweets] = useState<ITweet[]>([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [name, setName] = useState(user?.displayName ?? "Anonymous");
   const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (!user) return;
@@ -97,6 +126,26 @@ export default function Profile() {
   useEffect(() => {
     fetchTweets();
   }, []);
+
+  const onRenameClick = async () => {
+    if (!user) return;
+    setIsEdit((p) => !p);
+    if (!isEdit) return;
+    try {
+      await updateProfile(user, {
+        displayName: name,
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsEdit(false);
+    }
+  };
+
+  const onRename = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  };
+
   return (
     <Wrapper>
       <AvatarUpload htmlFor="avatar">
@@ -119,7 +168,14 @@ export default function Profile() {
         type="file"
         accept="image/*"
       />
-      <Name>{user?.displayName ? user.displayName : "Anonymous"}</Name>
+      {isEdit ? (
+        <RenameInput required onChange={onRename} type="text" value={name} />
+      ) : (
+        <Name>{name ? name : "Anonymous"}</Name>
+      )}
+      <RenameBtn onClick={onRenameClick}>
+        {isEdit ? "Save" : "Rename"}
+      </RenameBtn>
       <Tweets>
         {tweets.map((tweet) => (
           <Tweet key={tweet.id} {...tweet} />
